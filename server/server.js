@@ -19,22 +19,35 @@ app.use(express.static(public_path));
 io.on('connection', (socket) => {
   console.log('A new user is connected');
 
-  // socket.emit('newMessage', {
-  //   from: 'jim.zed.li@toutlook.com',
-  //   text: 'this is a new email message written to myself',
-  //   createdAt: new Date()
-  // })
+  socket.emit('newMessage', {
+    from: 'Admin',
+    text: 'Welcome to chat app!',
+    createdAt: new Date().getTime()
+  })
+
+  socket.broadcast.emit('newMessage', {
+    from: 'Admin',
+    text: 'A new user has joined!',
+    createdAt: new Date().getTime()
+  })
 
   socket.on('createMessage', (message) => {
     console.log("A message has been created", message);
 
     // io.emit() emits an event to every connection
     // socket.emit() emits to one single connection
+
     io.emit('newMessage', {
       from: message.from,
       text: message.text,
       createdAt: new Date().getTime()
     });
+
+    // socket.broadcast.emit('newMessage', {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // })
   })
 
   socket.on('disconnect', () => {
