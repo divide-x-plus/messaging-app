@@ -28,12 +28,15 @@ io.on('connection', (socket) => {
   socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user has joined'))
 
   // new message events
-  socket.on('createMessage', (message, callback) => {
+  socket.on('createMessage', (message) => {
+
+    // 'createMessage' event is subsequently passed on to 'newMessage' event
+    // on the server side
     io.emit('newMessage', generateMessage(message.from, message.text));
-    callback({
-      ackTime: new Date().getTime(),
-      transmission: true
-    })
+    // callback({
+    //   ackTime: new Date().getTime(),
+    //   transmission: true
+    // })
   })
 })
 
