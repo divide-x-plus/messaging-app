@@ -3,7 +3,7 @@ const http = require('http');
 const path = require('path');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocMessage} = require('./utils/message');
 const public_path = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000
 var app = express();
@@ -18,6 +18,7 @@ app.use(express.static(public_path));
 
 // register an event listener to a web socket
 io.on('connection', (socket) => {
+
   console.log('A new user is connected');
 
   socket.on('disconnect', () => { console.log('server is disconnected')})
@@ -29,16 +30,15 @@ io.on('connection', (socket) => {
 
   // new message events
   socket.on('createMessage', (message) => {
-
-    // 'createMessage' event is subsequently passed on to 'newMessage' event
-    // on the server side
     io.emit('newMessage', generateMessage(message.from, message.text));
-    // callback({
-    //   ackTime: new Date().getTime(),
-    //   transmission: true
-    // })
   })
-})
+
+  // emit to all admin location message
+  socket.on('createLocationMessage', (coords) => {
+    io.emit('newLocMessage', generateLocMessage('Admin', coords.lat, coords.lng));
+  })
+  
+}) // end of io connection callback
 
 server.listen(port, () => {
   console.log(`server is up on ${port}`);
