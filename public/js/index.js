@@ -11,16 +11,18 @@ socket.on('disconnect', () => {
 
 // handling message events
 socket.on('newMessage', (message) => {
+  let formattedTime = moment(message.createdAt).format('h:mm a');
   let li = jQuery('<li></li>');
-  li.text(`${message.from}: ${message.text}`);
+  li.text(`${message.from} ${formattedTime}: ${message.text}`);
   jQuery('#messages').append(li);
 })
 
 //TODO append location type message
 socket.on('newLocMessage', (message) => {
+  let formattedTime = moment(message.createdAt).format('h:mm a');
   let li = jQuery('<li></li>');
   // adding target _blank defaults to opening url in new tab
-  li.append(`${message.from}: <a target='_blank' href=${message.url}>Click to Access Loc</a>`)
+  li.append(`${message.from} ${formattedTime}: <a target='_blank' href=${message.url}>Click to Access Loc</a>`)
   jQuery('#messages').append(li);
 })
 
