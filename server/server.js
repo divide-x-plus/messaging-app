@@ -29,15 +29,16 @@ io.on('connection', (socket) => {
   socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user has joined'))
 
   // new message events
-  socket.on('createMessage', (message) => {
+  socket.on('createMessage', (message, callback) => {
     io.emit('newMessage', generateMessage(message.from, message.text));
+    callback()
   })
 
   // emit to all admin location message
   socket.on('createLocationMessage', (coords) => {
     io.emit('newLocMessage', generateLocMessage('Admin', coords.lat, coords.lng));
   })
-  
+
 }) // end of io connection callback
 
 server.listen(port, () => {
